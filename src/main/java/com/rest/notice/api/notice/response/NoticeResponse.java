@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Builder
+
 @Data
 public class NoticeResponse {
     private String title;

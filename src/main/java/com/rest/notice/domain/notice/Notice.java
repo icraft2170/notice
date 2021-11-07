@@ -1,15 +1,16 @@
 package com.rest.notice.domain.notice;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.rest.notice.api.notice.request.NoticeRequest;
+import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Entity
 @Table(name = "NOTICE")
@@ -37,6 +38,29 @@ public class Notice {
     @Column(name = "notice_writer")
     private String writer;
 
-    @OneToMany(mappedBy = "notice")
+    @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL)
     private List<UploadFile> uploadFiles = new ArrayList<>();
+
+    // 생성 메서드
+    public static Notice createNotice(String title,String content,String writer,List<UploadFile> uploadFiles){
+        Notice notice = new Notice(null, title, content, LocalDateTime.now(), null, 0, writer, null);
+        notice.setUploadFiles(uploadFiles);
+        return notice;
+    }
+
+    // 연관관계 메서드
+    private void setUploadFiles(List<UploadFile> uploadFiles) {
+        this.uploadFiles = uploadFiles;
+        uploadFiles.forEach(uploadFile -> uploadFile.setNotice(this));
+    }
+
+
+    public void setUpdate(NoticeRequest request, List<UploadFile> uploadFiles) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.writer = request.getWriter();
+
+        this.uploadFiles.forEach(uploadFile -> uploadFile.setNotice(null));
+        this.setUploadFiles(uploadFiles);
+    }
 }
