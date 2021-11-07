@@ -40,6 +40,13 @@ public class FileNotice {
         return UploadFile.createUploadFile(originalFilename, storeFileName);
     }
 
+    public void deleteFile(String storeFileName){
+        String fullPath = getFullPath(storeFileName);
+        File deleteFile = new File(fullPath);
+        if(deleteFile.exists()){
+            deleteFile.delete();
+        }
+    }
 
     private String createStoreFileName(String originalFilename) {
         String ext = extractExt(originalFilename);

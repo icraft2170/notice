@@ -24,7 +24,7 @@ public class NoticeServiceImpl implements NoticeService{
         // Todo: IOException 처리방법 알아보기 수정해야 할 부분
         try {
             List<UploadFile> uploadFiles = fileNotice.repositoryFile(files);
-            noticeRepository.save(Notice.createNotice(request.getTitle(), request.getContent(), request.getWriter(), uploadFiles));
+            noticeRepository.save(Notice.createNotice(request.getTitle(), request.getContent(), request.getWriter(), request.getEndDate(),uploadFiles));
         }catch (IOException e){
             e.printStackTrace();
             // throw new RuntimeException( FileUploadException ... custom??)
@@ -36,6 +36,9 @@ public class NoticeServiceImpl implements NoticeService{
     public String modifyNotice(Long noticeId, NoticeRequest request, List<MultipartFile> files) {
         try {
             Notice notice = noticeRepository.findByNotice(noticeId);
+
+            // 현재 저장 파일 전체삭제
+            notice.getUploadFiles().forEach(uploadFile -> fileNotice.deleteFile(uploadFile.getRepositoryFileName()));
             notice.setUpdate(request, fileNotice.repositoryFile(files));
             return null;
         }catch (IOException e){

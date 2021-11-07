@@ -42,8 +42,8 @@ public class Notice {
     private List<UploadFile> uploadFiles = new ArrayList<>();
 
     // 생성 메서드
-    public static Notice createNotice(String title,String content,String writer,List<UploadFile> uploadFiles){
-        Notice notice = new Notice(null, title, content, LocalDateTime.now(), null, 0, writer, null);
+    public static Notice createNotice(String title,String content,String writer,LocalDateTime endDate ,List<UploadFile> uploadFiles){
+        Notice notice = new Notice(null, title, content, LocalDateTime.now(), endDate, 0, writer, null);
         notice.setUploadFiles(uploadFiles);
         return notice;
     }
@@ -59,8 +59,17 @@ public class Notice {
         this.title = request.getTitle();
         this.content = request.getContent();
         this.writer = request.getWriter();
+        this.endDate = request.getEndDate();
+        for (int i = 0; i < uploadFiles.size(); i++) {
+            if(i < this.uploadFiles.size()) {
+                UploadFile uploadFile = this.uploadFiles.get(i);
+                UploadFile changeUploadFile = uploadFiles.get(i);
 
-        this.uploadFiles.forEach(uploadFile -> uploadFile.setNotice(null));
-        this.setUploadFiles(uploadFiles);
+                uploadFile.updateUploadFile(changeUploadFile.getUploadFileName(),changeUploadFile.getRepositoryFileName());
+            }else{
+                uploadFiles.get(i).setNotice(this);
+                this.uploadFiles.add(uploadFiles.get(i));
+            }
+        }
     }
 }
