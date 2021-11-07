@@ -27,4 +27,9 @@ public class NoticeRepositoryImpl implements NoticeRepository{
                 .setParameter("noticeId", noticeId)
                 .getResultList().get(0);
     }
+
+    @Override
+    public void deleteNotice(Notice notice) {
+        em.remove(notice);
+    }
 }

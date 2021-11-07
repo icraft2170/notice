@@ -34,6 +34,7 @@ public class NoticeServiceImpl implements NoticeService{
 
     @Override
     public String modifyNotice(Long noticeId, NoticeRequest request, List<MultipartFile> files) {
+        // Todo: Try-Catch fileNotice 안으로 옮겨서 한번에 ( 런타임 익셉션으로 변경해서 날려줘 )
         try {
             Notice notice = noticeRepository.findByNotice(noticeId);
 
@@ -50,6 +51,7 @@ public class NoticeServiceImpl implements NoticeService{
 
     @Override
     public String deleteNotice(Long noticeId) {
+        noticeRepository.deleteNotice(noticeRepository.findByNotice(noticeId));
         return null;
     }
 }

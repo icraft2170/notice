@@ -6,4 +6,6 @@ public interface NoticeRepository {
     void save(Notice notice);
 
     public Notice findByNotice(Long noticeId);
+
+    void deleteNotice(Notice notice);
 }

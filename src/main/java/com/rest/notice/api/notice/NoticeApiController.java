@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rest.notice.api.notice.request.NoticeRequest;
-import com.rest.notice.api.notice.response.MsgNoticeResponse;
 import com.rest.notice.api.notice.response.NoticeResponse;
 import com.rest.notice.service.notice.NoticeQueryServiceImpl;
 import com.rest.notice.service.notice.NoticeService;
@@ -46,10 +45,9 @@ public class NoticeApiController {
     }
 
     @DeleteMapping("/{noticeId}/delete")
-    public MsgNoticeResponse deleteNotice(@PathVariable Long noticeId){
-
-        String msg = noticeService.deleteNotice(noticeId);
-        return new MsgNoticeResponse(msg);
+    public ResponseEntity deleteNotice(@PathVariable Long noticeId){
+        noticeService.deleteNotice(noticeId);
+        return null;
     }
 
     @GetMapping
