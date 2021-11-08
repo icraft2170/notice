@@ -1,16 +1,24 @@
 package com.rest.notice.api.notice;
 
+import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rest.notice.api.notice.request.NoticeRequest;
-import com.rest.notice.api.notice.response.NoticeResponse;
+import com.rest.notice.api.notice.response.CreateNoticeResponse;
+import com.rest.notice.api.notice.response.DeleteNoticeResponse;
+import com.rest.notice.api.notice.response.ModifyNoticeResponse;
+import com.rest.notice.dto.NoticeQueryDto;
+
+import com.rest.notice.dto.Page;
+import com.rest.notice.dto.Pageable;
+import com.rest.notice.dto.Result;
 import com.rest.notice.service.notice.NoticeQueryServiceImpl;
 import com.rest.notice.service.notice.NoticeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,49 +31,42 @@ import java.util.List;
 public class NoticeApiController {
     private final NoticeService noticeService;
     private final NoticeQueryServiceImpl noticeQueryService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping("/new")
-    public ResponseEntity writeNotice(
+    public CreateNoticeResponse createNotice(
                               @RequestPart(name = "content") String content,
                               @RequestPart(value = "files", required = false) List<MultipartFile> files) throws JsonProcessingException {
-        NoticeRequest request = getObjectMapper().readValue(content, NoticeRequest.class);
+        NoticeRequest request = objectMapper.readValue(content, NoticeRequest.class);
         noticeService.saveNotice(request,files);
-        return null;
+        return new CreateNoticeResponse("ok");
     }
 
-
     @PutMapping("/{noticeId}/update")
-    public ResponseEntity modifyNotice(
+    public ModifyNoticeResponse modifyNotice(
             @PathVariable Long noticeId
             ,@RequestPart(name = "content") String content
             ,@RequestPart(value = "files", required = false) List<MultipartFile> files) throws JsonProcessingException {
-        NoticeRequest request = getObjectMapper().readValue(content, NoticeRequest.class);
+        NoticeRequest request = objectMapper.readValue(content, NoticeRequest.class);
         noticeService.modifyNotice(noticeId,request,files);
-        return null;
+        return new ModifyNoticeResponse("ok");
     }
 
     @DeleteMapping("/{noticeId}/delete")
-    public ResponseEntity deleteNotice(@PathVariable Long noticeId){
+    public DeleteNoticeResponse deleteNotice(@PathVariable Long noticeId){
         noticeService.deleteNotice(noticeId);
-        return null;
+        return new DeleteNoticeResponse("ok");
     }
 
     @GetMapping
-    public List<NoticeResponse> notices(){
-        return noticeQueryService.findAllNotice();
+    public Page<NoticeQueryDto> notices(@ModelAttribute Pageable pageable) {
+        return noticeQueryService.findAllNotice(pageable);
     }
 
-
-
-
-
-
-    // Object Mapper TimeStamp 설정 Todo: 빈 설정 가능 요소인지 확인.
-    private ObjectMapper getObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        return objectMapper;
+    @GetMapping("/{noticeId}")
+    public Result notice(@PathVariable Long noticeId){
+//        NoticeDto noticeDto = noticeQueryService.findOneNotice;
+        return null;
     }
 
 }

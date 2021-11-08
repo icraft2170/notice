@@ -1,9 +1,9 @@
 package com.rest.notice.service.notice;
 
-import com.rest.notice.api.notice.response.NoticeResponse;
-
-import java.util.List;
+import com.rest.notice.dto.NoticeQueryDto;
+import com.rest.notice.dto.Page;
+import com.rest.notice.dto.Pageable;
 
 public interface NoticeQueryService {
-    List<NoticeResponse> findAllNotice();
+    Page<NoticeQueryDto> findAllNotice(Pageable pageable);
 }

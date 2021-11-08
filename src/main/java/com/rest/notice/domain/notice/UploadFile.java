@@ -11,8 +11,13 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(name = "UPLOAD_FILES")
+@SequenceGenerator(
+        name="FILE_SEQ_GEN",
+        sequenceName="FILE_SEQ",
+        initialValue=1,
+        allocationSize=100)
 public class UploadFile {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FILE_SEQ_GEN")
     @Column(name = "upload_file_id")
     private Long id;
 
@@ -45,8 +50,6 @@ public class UploadFile {
         this.uploadFileName = uploadFileName;
         this.repositoryFileName = repositoryFileName;
     }
-
-//    public member
 
 
 }

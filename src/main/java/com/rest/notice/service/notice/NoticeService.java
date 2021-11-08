@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.util.List;
 
 public interface NoticeService {
-    String saveNotice(NoticeRequest request, List<MultipartFile> files);
+    void saveNotice(NoticeRequest request, List<MultipartFile> files);
 
-    String modifyNotice(Long noticeId, NoticeRequest request, List<MultipartFile> files);
+    void modifyNotice(Long noticeId, NoticeRequest request, List<MultipartFile> files);
 
-    String deleteNotice(Long noticeId);
+    void deleteNotice(Long noticeId);
 }
