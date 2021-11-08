@@ -25,23 +25,23 @@ public class Notice {
     @Column(name = "notice_id")
     private Long id;
 
-    @Column(name = "notice_title")
+    @Column(name = "title")
     private String title;
 
     @Lob
-    @Column(name = "notice_content")
+    @Column(name = "content")
     private String content;
 
-    @Column(name = "notice_registration_date")
+    @Column(name = "registration_date")
     private LocalDateTime registrationDate;
 
-    @Column(name = "notice_end_date")
+    @Column(name = "end_date")
     private LocalDateTime endDate;
 
-    @Column(name = "notice_hit")
+    @Column(name = "hit")
     private Integer hit;
 
-    @Column(name = "notice_writer")
+    @Column(name = "writer")
     private String writer;
 
     @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL)
@@ -77,5 +77,9 @@ public class Notice {
                 this.uploadFiles.add(uploadFiles.get(i));
             }
         }
+    }
+
+    public void addHit(){
+        this.hit++;
     }
 }

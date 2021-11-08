@@ -1,6 +1,7 @@
 package com.rest.notice.repository.notice;
 
 import com.rest.notice.dto.NoticeQueryDto;
+import com.rest.notice.dto.NoticesQueryDto;
 import com.rest.notice.domain.notice.Notice;
 import com.rest.notice.dto.Page;
 import com.rest.notice.dto.Pageable;
@@ -40,7 +41,7 @@ public class NoticeRepositoryImpl implements NoticeRepository{
     }
 
     @Override
-    public Page<NoticeQueryDto> findPageNotice(Pageable pageable) {
+    public Page<NoticesQueryDto> findPageNotice(Pageable pageable) {
         List<Notice> contents = em.createQuery("select n" +
                         " from Notice n" +
                         " order by n.registrationDate DESC", Notice.class)
@@ -50,6 +51,15 @@ public class NoticeRepositoryImpl implements NoticeRepository{
 
 
         List counts = em.createQuery("select count(n) from Notice n").getResultList();
-        return new Page<NoticeQueryDto>(pageable.getPageNumber(),pageable.getPageSize(), Integer.parseInt(String.valueOf(counts.get(0))),contents.stream().map(NoticeQueryDto::new).collect(Collectors.toList()));
+        return new Page<NoticesQueryDto>(pageable.getPageNumber(),pageable.getPageSize(), Integer.parseInt(String.valueOf(counts.get(0))),contents.stream().map(NoticesQueryDto::new).collect(Collectors.toList()));
+    }
+
+    @Override
+    public Notice findOne(Long noticeId) {
+        return em.createQuery("select n" +
+                        " from Notice n" +
+                        " where n.id = :noticeId", Notice.class)
+                .setParameter("noticeId",noticeId)
+                .getSingleResult();
     }
 }
