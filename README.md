@@ -310,7 +310,7 @@ public class Page <T>{
 
 [comment]: <> (### Test &#40; auto-ddl : create-drop &#41;)
 
-[comment]: <> (여유될 때 추가하자 정리하자)
+
 
 ## 대용량 트래픽 대응 노력
 - ObjectMapper Bean 등록하여 DI를 통해 사용
