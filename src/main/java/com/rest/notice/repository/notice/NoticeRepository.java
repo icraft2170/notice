@@ -7,6 +7,8 @@ import com.rest.notice.domain.notice.Notice;
 import com.rest.notice.dto.Page;
 import com.rest.notice.dto.Pageable;
 
+import java.util.List;
+
 public interface NoticeRepository {
     void save(Notice notice);
 
@@ -17,4 +19,7 @@ public interface NoticeRepository {
     Page<NoticesQueryDto> findPageNotice(Pageable pageable);
 
     Notice findOne(Long noticeId);
+
+    List<Notice> findAll();
+
 }

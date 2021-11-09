@@ -9,13 +9,13 @@ import javax.persistence.*;
 
 @AllArgsConstructor @NoArgsConstructor
 @Getter
-@Entity
 @Table(name = "UPLOAD_FILES")
 @SequenceGenerator(
         name="FILE_SEQ_GEN",
         sequenceName="FILE_SEQ",
         initialValue=1,
         allocationSize=100)
+@Entity
 public class UploadFile {
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FILE_SEQ_GEN")
     @Column(name = "upload_file_id")

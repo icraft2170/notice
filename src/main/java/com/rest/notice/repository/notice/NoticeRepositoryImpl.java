@@ -19,10 +19,12 @@ import java.util.stream.Collectors;
 public class NoticeRepositoryImpl implements NoticeRepository{
     private final EntityManager em;
 
+
     @Override
     public void save(Notice notice) {
         em.persist(notice);
     }
+
 
     @Override
     public Notice findByNotice(Long noticeId) {
@@ -32,7 +34,7 @@ public class NoticeRepositoryImpl implements NoticeRepository{
                         " join fetch n.uploadFiles" +
                         " where n.id = :noticeId", Notice.class)
                 .setParameter("noticeId", noticeId)
-                .getResultList().get(0);
+                .getSingleResult();
     }
 
     @Override
@@ -62,4 +64,12 @@ public class NoticeRepositoryImpl implements NoticeRepository{
                 .setParameter("noticeId",noticeId)
                 .getSingleResult();
     }
+
+    @Override
+    public List<Notice> findAll() {
+        return em.createQuery("select n from Notice n",Notice.class)
+                .getResultList();
+    }
+
+
 }

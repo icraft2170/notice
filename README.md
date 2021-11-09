@@ -97,7 +97,7 @@ test {
 |URL|메서드명|리턴|전송 방식|기능|
 |-------------|---------------|----------------|--------------------|---------------|
 |/notice/new|createNotice|CreateNoticeResponse|POST|Notice 등록|
-|/notice/{noticeId}/update|modifyNotice|ModifyNoticeResponse|PUT|Notice 수정|
+|/notice/{noticeId}/update|modifyNotice|ModifyNoticeResponse|Post|Notice 수정|
 |/notice/{noticeId}/delete|deleteNotice|DeleteNoticeResponse|DELETE|Notice 삭제|
 |/notice|notices|Page<NoticesQueryDto>|GET|Notice List|
 |/notice/{noticeId}|notice|Result|GET|Notice 상세 조회|
@@ -249,5 +249,12 @@ public class Page <T>{
 - Spring에서 제공해주는 `Page` 혹은 `Pageable` 을 참고하여 해당 api의 dto를 감싸는 클래스를 생성하고 해당 클래스에 페이징에 필요한
 데이터를 추가해서 보낼 수 있는 환경 제공
 
-## 도메인에 비지니스 로직 집중
+## 문제상황 5
+### MultiPart Put -> Post로 변경
+- https://blog.outsider.ne.kr/1001
+- Test Code 작성하다 알게된 사실
+
+## 대용량 트래픽 대응 노력
+- ObjectMapper Bean등록
+- 페치 조인
 - 각각의 도메인에 스스로와 관련된 비지니스 로직을 응집하면서. 유지보수가 편리해짐.

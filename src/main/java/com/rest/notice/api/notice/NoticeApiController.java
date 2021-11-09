@@ -3,16 +3,15 @@ package com.rest.notice.api.notice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.notice.api.notice.request.NoticeRequest;
-import com.rest.notice.api.notice.response.CreateNoticeResponse;
-import com.rest.notice.api.notice.response.DeleteNoticeResponse;
-import com.rest.notice.api.notice.response.ModifyNoticeResponse;
 import com.rest.notice.dto.*;
 
-import com.rest.notice.service.notice.NoticeQueryServiceImpl;
+import com.rest.notice.service.notice.NoticeQueryService;
 import com.rest.notice.service.notice.NoticeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,32 +23,34 @@ import java.util.List;
 @RequestMapping("/notice")
 public class NoticeApiController {
     private final NoticeService noticeService;
-    private final NoticeQueryServiceImpl noticeQueryService;
+    private final NoticeQueryService noticeQueryService;
     private final ObjectMapper objectMapper;
 
+
     @PostMapping("/new")
-    public CreateNoticeResponse createNotice(
+    public ResponseEntity<String> createNotice(
                               @RequestPart(name = "content") String content,
                               @RequestPart(value = "files", required = false) List<MultipartFile> files) throws JsonProcessingException {
         NoticeRequest request = objectMapper.readValue(content, NoticeRequest.class);
         noticeService.saveNotice(request,files);
-        return new CreateNoticeResponse("ok");
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
-    @PutMapping("/{noticeId}/update")
-    public ModifyNoticeResponse modifyNotice(
+
+    @PostMapping("/{noticeId}/update")
+    public ResponseEntity<String> modifyNotice(
             @PathVariable Long noticeId
             ,@RequestPart(name = "content") String content
             ,@RequestPart(value = "files", required = false) List<MultipartFile> files) throws JsonProcessingException {
         NoticeRequest request = objectMapper.readValue(content, NoticeRequest.class);
         noticeService.modifyNotice(noticeId,request,files);
-        return new ModifyNoticeResponse("ok");
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{noticeId}/delete")
-    public DeleteNoticeResponse deleteNotice(@PathVariable Long noticeId){
+    public ResponseEntity<String> deleteNotice(@PathVariable Long noticeId){
         noticeService.deleteNotice(noticeId);
-        return new DeleteNoticeResponse("ok");
+        return new ResponseEntity<String>(HttpStatus.OK);
     }
 
     @GetMapping

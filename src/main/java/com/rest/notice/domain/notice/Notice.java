@@ -11,15 +11,15 @@ import java.util.List;
 
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor //(access = AccessLevel.PRIVATE)
 @Getter
-@Entity
 @Table(name = "NOTICE")
 @SequenceGenerator(
         name="NOTICE_SEQ_GEN",
         sequenceName="NOTICE_SEQ",
         initialValue=1,
         allocationSize=100)
+@Entity
 public class Notice {
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "NOTICE_SEQ_GEN")
     @Column(name = "notice_id")
