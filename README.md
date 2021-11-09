@@ -287,7 +287,7 @@ public class Page <T>{
 
 - 최초에 Notice 수정 Api Controller는 Put으로 진행하였으나. 통합 테스트 작성 과정에서 `Mock`에서 Put으로는 MultiPart 지원이 불가능하였다.
 이에 좀더 알아보니, 스프링 웹 MVC는 해당 내용을 Post로만 인식한다. 이유는 `Tomcat`에 `ServletFileUpload`가 아래 코드와 같이 하드코딩 되어있기 때문이다.
-`multipart/form-data` 는 현재 Post로 해야하기 때문에 Put으로 작성한 내용 변경 
+`multipart/form-data` 는 Post로 해야하는것이 기본 규약으로 보여 변경 
 ```java
     public static final boolean isMultipartContent(
             final HttpServletRequest request) {
