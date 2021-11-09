@@ -10,7 +10,7 @@
 - 공지사항 조회시 응답은 다음과 같다.
   - 제목, 내용, 등록일시, 조회수, 작성자
 
-## 실행 방법 
+## 1. 실행 방법 
 
 ### 의존성
 ```groovy
@@ -48,7 +48,7 @@ test {
 	useJUnitPlatform()
 }
 ```
-####  Lombok 설정
+#### Lombok 설정
 - InteliJ
   - https://leeys.tistory.com/27
 - STS
@@ -62,11 +62,44 @@ test {
 ### PostMan 사용
 - https://www.postman.com/
 
-### 테스트 코드
-// 작성 예정
+## 2. 테스트 코드
+- Junit5 , AssertJ , Mock 사용
+-  `NoticeRepositoryTest` 단위 테스트 작성
+-  `NoticeApiControllerTest` 통합 테스트 작성
 
 
-## DataBase
+## 3. DataBase
+
+### (MySQL 기준) DDL 예시 
+- 실행은 H2 DataBase로  `application.properties`에서 `auto-ddl: create`(Mode)로 진행하여야 합니다.
+```mysql
+CREATE TABLE notice
+(
+    notice_id         BIGINT       NOT NULL,
+    title             VARCHAR(40) NOT NULL,
+    content           LONGTEXT     NOT NULL,
+    registration_date datetime     NOT NULL,
+    end_date          datetime     NOT NULL,
+    hit               INT          NOT NULL,
+    writer            VARCHAR(30) NOT NULL,
+    CONSTRAINT pk_notice PRIMARY KEY (notice_id)
+);
+```
+
+```mysql
+CREATE TABLE upload_files
+(
+    upload_file_id       BIGINT       NOT NULL,
+    upload_file_name     VARCHAR(40) NOT NULL,
+    repository_file_name VARCHAR(50) NOT NULL,
+    notice_id            BIGINT       NOT NULL,
+    CONSTRAINT pk_upload_files PRIMARY KEY (upload_file_id)
+);
+
+ALTER TABLE upload_files
+    ADD CONSTRAINT FK_UPLOAD_FILES_ON_NOTICE FOREIGN KEY (notice_id) REFERENCES notice (notice_id);
+```
+
 
 ### Table 명세
 
@@ -92,20 +125,20 @@ test {
 
 
 
-### Response Method
+## 4. Response Method
 
 |URL|메서드명|리턴|전송 방식|기능|
 |-------------|---------------|----------------|--------------------|---------------|
-|/notice/new|createNotice|CreateNoticeResponse|POST|Notice 등록|
-|/notice/{noticeId}/update|modifyNotice|ModifyNoticeResponse|Post|Notice 수정|
-|/notice/{noticeId}/delete|deleteNotice|DeleteNoticeResponse|DELETE|Notice 삭제|
-|/notice|notices|Page<NoticesQueryDto>|GET|Notice List|
-|/notice/{noticeId}|notice|Result|GET|Notice 상세 조회|
+|/notice/post|createNotice|ResponseEntity|POST|Notice 등록|
+|/notice/{noticeId}/post|modifyNotice|ResponseEntity|Post|Notice 수정|
+|/notice/{noticeId}/delete|deleteNotice|ResponseEntity|DELETE|Notice 삭제|
+|/notice/gets|notices|Page<NoticesQueryDto>|GET|Notice List|
+|/notice/{noticeId}/get|notice|Result|GET|Notice 상세 조회|
 
 
-# 문제 상황과 해결 과정
+# 5. 문제 상황과 해결 과정
 
-## 문제상황 1
+## 이슈 1
 ### 입력 과정에서 Json 형태의 (Notice data)와 File을 같이 받아와야 하는 경우.
 
 1. 처음에는 `@RequestBody`를 통해서 Json을 받아오고 MultipartFile을 따로 받을 수 있을 것이라 판단하였으나. MultiPart형식은 결국
@@ -132,7 +165,7 @@ Http Body에 구분을 지어서 여러 파트를 나누어 보내는 것이기 
 ```
 
 
-## 문제상황 2
+## 이슈 2
 ### 등록 및 수정 과정에서 Json을 Object로 변경할 때 DateFormat문제 발생
 >com.fasterxml.jackson.databind.exc.InvalidDefinitionException: Java 8 date/time type `java.time.LocalDateTime` not supported by default: add Module "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" to enable handling 
 
@@ -179,7 +212,7 @@ public class JsonConfig {
    - 서버 환경에서 다수에 ObjectMapper를 생성할 필요 없어지고 싱글톤으로 관리할 수 있도록 하였다.
     
 
-## 문제상황 3
+## 이슈 3
 ### 파일 업로드과정에서 IOException(체크예외)이 계속 던져져 `FileNotice`를 사용하는 모든 곳에 해당 체크예외가 `throw`됨
 ### 파일 업로드 과정에서 예외가 발생했을 때 IOException으로 던져져 정확한 원인 파악이 힘들다는 문제.
 
@@ -206,7 +239,7 @@ public class JsonConfig {
 으로 예외 전환을 해준다.   `FileUploadFailException`는 `RuntimeException`을 상속받아 언체크 예외로 예외처리 필수가 아니기 때문에 
 `FileNotice`를 사용하는 다른 곳에서 해당 예외처리를 코드로 처리할 필요가 사라졌다.
 
-## 문제상황 4
+## 이슈 4
 ### 페이징 처리를 위한 반환 형태, 및 Api 스펙변경에 유연한 구조
 
 ```java
@@ -249,12 +282,37 @@ public class Page <T>{
 - Spring에서 제공해주는 `Page` 혹은 `Pageable` 을 참고하여 해당 api의 dto를 감싸는 클래스를 생성하고 해당 클래스에 페이징에 필요한
 데이터를 추가해서 보낼 수 있는 환경 제공
 
-## 문제상황 5
+## 이슈 5
 ### MultiPart Put -> Post로 변경
-- https://blog.outsider.ne.kr/1001
-- Test Code 작성하다 알게된 사실
+
+- 최초에 Notice 수정 Api Controller는 Put으로 진행하였으나. 통합 테스트 작성 과정에서 `Mock`에서 Put으로는 MultiPart 지원이 불가능하였다.
+이에 좀더 알아보니, 스프링 웹 MVC는 해당 내용을 Post로만 인식한다. 이유는 `Tomcat`에 `ServletFileUpload`가 아래 코드와 같이 하드코딩 되어있기 때문이다.
+`multipart/form-data` 는 현재 Post로 해야하기 때문에 Put으로 작성한 내용 변경 
+```java
+    public static final boolean isMultipartContent(
+            final HttpServletRequest request) {
+        if (!POST_METHOD.equalsIgnoreCase(request.getMethod())) {
+            return false;
+        }
+        return FileUploadBase.isMultipartContent(new ServletRequestContext(request));
+    }
+/**
+ * Spring Boot 내장 (apache.tomcat.embed) Tocat 9.0.54 ( Spring Boot 2.5.6 Version ) 기준 
+ */
+```
+> 출처 : https://blog.outsider.ne.kr/1001 
+
+## 이슈 6
+### Controller Mapping Url 변경
+- 최초 작성에 Mapping url이 Restful 형식과 맞지않아 해당 규약에 대해 구글링을 통해 변경하였다.
+
+[comment]: <> (## 이슈 8)
+
+[comment]: <> (### Test &#40; auto-ddl : create-drop &#41;)
+
+[comment]: <> (여유될 때 추가하자 정리하자)
 
 ## 대용량 트래픽 대응 노력
-- ObjectMapper Bean등록
+- ObjectMapper Bean 등록하여 DI를 통해 사용
 - 페치 조인
 - 각각의 도메인에 스스로와 관련된 비지니스 로직을 응집하면서. 유지보수가 편리해짐.
