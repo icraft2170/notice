@@ -27,7 +27,8 @@ public class NoticeApiController {
     private final ObjectMapper objectMapper;
 
 
-    @PostMapping("/new")
+
+    @PostMapping("/post")
     public ResponseEntity<String> createNotice(
                               @RequestPart(name = "content") String content,
                               @RequestPart(value = "files", required = false) List<MultipartFile> files) throws JsonProcessingException {
@@ -37,7 +38,8 @@ public class NoticeApiController {
     }
 
 
-    @PostMapping("/{noticeId}/update")
+
+    @PostMapping("/{noticeId}/post")
     public ResponseEntity<String> modifyNotice(
             @PathVariable Long noticeId
             ,@RequestPart(name = "content") String content
@@ -53,12 +55,13 @@ public class NoticeApiController {
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 
-    @GetMapping
+
+    @GetMapping("/gets")
     public Page<NoticesQueryDto> notices(@ModelAttribute Pageable pageable) {
         return noticeQueryService.findAllNotice(pageable);
     }
 
-    @GetMapping("/{noticeId}")
+    @GetMapping("/{noticeId}/get")
     public Result notice(@PathVariable Long noticeId){
         return new Result<NoticeQueryDto>(noticeQueryService.findOneNotice(noticeId));
     }

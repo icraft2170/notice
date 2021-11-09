@@ -86,7 +86,7 @@ class NoticeApiControllerTest {
     void createNotice() throws Exception {
         //given
         String title = "new-notice";
-        String url = "http://localhost:" + port +"/notice/new";
+        String url = "http://localhost:" + port +"/notice/post";
         String content = "{ \"title\":\"" + title + "\",\"content\":\"notice-new-content\",\"writer\" : \"hyeonho\",\"endDate\":\"2022-03-04T12:00:00\" }";
 
         String fileUuid = UUID.randomUUID().toString();
@@ -119,7 +119,7 @@ class NoticeApiControllerTest {
     @DisplayName(value = "공지사항 수정")
     void modifyNotice() throws Exception {
         //given
-        mockMvc.perform(multipart("http://localhost:" + port +"/notice/new")
+        mockMvc.perform(multipart("http://localhost:" + port +"/notice/post")
                         .file("files", new MockMultipartFile(
                                 "test.txt",
                                 "/Users/sonhyeonho/Desktop/rest/notice/src/main/resources/file/" + UUID.randomUUID().toString() +".txt",
@@ -132,7 +132,7 @@ class NoticeApiControllerTest {
                 .andExpect(status().isOk());
 
         String title = "modify-notice";
-        String url = "http://localhost:" + port + "/notice/1/update";
+        String url = "http://localhost:" + port + "/notice/1/post";
         String content = "{\"title\":\""+ title +"\",\"content\":\"notice-modify-content\",\"writer\" : \"modifyhyeonho\",\"endDate\":\"2022-12-04T12:00:00\"}";
 
 
@@ -163,7 +163,7 @@ class NoticeApiControllerTest {
     @DisplayName(value = "공지사항 삭제")
     void deleteNotice() throws Exception {
         //given
-        mockMvc.perform(multipart("http://localhost:" + port +"/notice/new")
+        mockMvc.perform(multipart("http://localhost:" + port +"/notice/post")
                         .file("files", new MockMultipartFile(
                                 "test.txt",
                                 "/Users/sonhyeonho/Desktop/rest/notice/src/main/resources/file/" + UUID.randomUUID().toString() +".txt",
@@ -191,21 +191,10 @@ class NoticeApiControllerTest {
     @DisplayName(value = "공지사항 상세조회")
     void notice() throws Exception {
         //given
-//        mockMvc.perform(multipart("http://localhost:" + port +"/notice/new")
-//                        .file("files", new MockMultipartFile(
-//                                "test.txt",
-//                                "/Users/sonhyeonho/Desktop/rest/notice/src/main/resources/file/" + UUID.randomUUID().toString() +".txt",
-//                                MediaType.TEXT_PLAIN_VALUE,
-//                                "Test File!".getBytes())
-//                                .getBytes())
-//                        .part(
-//                                new MockPart("content", ("{ \"title\":\"" + "new-notice" + "\",\"content\":\"notice-new-content\",\"writer\" : \"hyeonho\",\"endDate\":\"2022-03-04T12:00:00\" }").getBytes(StandardCharsets.UTF_8))
-//                        ))
-//                .andExpect(status().isOk());
 
         String title = "new-notice";
-        String saveUrl = "http://localhost:" + port +"/notice/new";
-        String url = "http://localhost:" + port + "/notice/1";
+        String saveUrl = "http://localhost:" + port +"/notice/post";
+        String url = "http://localhost:" + port + "/notice/1/get";
         String json = "{ \"title\":\"" + title + "\",\"content\":\"notice-new-content\",\"writer\" : \"hyeonho\",\"endDate\":\"2022-03-04T12:00:00\" }";
         String fileUuid = UUID.randomUUID().toString();
         MockMultipartFile file
