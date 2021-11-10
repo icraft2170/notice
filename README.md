@@ -61,6 +61,23 @@ test {
 
 ### PostMan 사용
 - https://www.postman.com/
+#### Request 목록
+- Post : http://localhost:8080/notice/post
+  - Body(form-data)
+    - files : (파일)
+    - content : {"title":"new-notice","content":"notice-new-content","writer" : "hyeonho","endDate":"2022-03-04T12:00:00"} [contentType : application/json]
+ 
+- Post : http://localhost:8080/notice/{noticeId}/post
+  - Body(form-data)
+    - files : (파일)
+    - content : {"title":"modify-notice","content":"notice-modify-content","writer" : "modifyhyeonho","endDate":"2022-12-04T12:00:00"} [contentType : application/json]
+
+- DELETE : http://localhost:8080/notice/{noticeId}/delete
+
+- GET : http://localhost:8080/notice/gets Or http://localhost:8080/notice/gets?page=:pageNo&offset=:offset 
+
+- GET : http://localhost:8080/notice/{noticeId}/get
+
 
 ## 2. 테스트 코드
 - Junit5 , AssertJ , Mock 사용

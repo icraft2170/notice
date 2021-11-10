@@ -191,7 +191,6 @@ class NoticeApiControllerTest {
     @DisplayName(value = "공지사항 상세조회")
     void notice() throws Exception {
         //given
-
         String title = "new-notice";
         String saveUrl = "http://localhost:" + port +"/notice/post";
         String url = "http://localhost:" + port + "/notice/1/get";

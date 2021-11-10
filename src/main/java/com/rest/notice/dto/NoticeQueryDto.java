@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 
-//Todo: 생각보다 많은 라이브러리에서 기본생성자를 리플렉션 하는 것으로 보아. 기본생성자를 만들어두는 습관이 필요한듯... [ 블로그 만들고 정리해두기 : JavaType에서 느낀점 - No Constructor Exception]
+
 @Data @NoArgsConstructor @AllArgsConstructor
 public class NoticeQueryDto {
     private String title;

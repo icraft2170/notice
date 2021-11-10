@@ -28,6 +28,6 @@ public class Pageable  {
     }
 
     public int getLastNum(){
-        return getStartNum() + getPageSize() + 1;
+        return getStartNum() + getPageSize();
     }
 }

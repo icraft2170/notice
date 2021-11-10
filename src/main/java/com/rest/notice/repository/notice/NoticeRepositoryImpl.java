@@ -19,12 +19,10 @@ import java.util.stream.Collectors;
 public class NoticeRepositoryImpl implements NoticeRepository{
     private final EntityManager em;
 
-
     @Override
     public void save(Notice notice) {
         em.persist(notice);
     }
-
 
     @Override
     public Notice findByNotice(Long noticeId) {
@@ -50,6 +48,7 @@ public class NoticeRepositoryImpl implements NoticeRepository{
                 .setFirstResult(pageable.getStartNum())
                 .setMaxResults(pageable.getLastNum())
                 .getResultList();
+        log.debug("startNo = {} , lastNo = {}", pageable.getStartNum(), pageable.getLastNum());
 
 
         List counts = em.createQuery("select count(n) from Notice n").getResultList();

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.notice.api.notice.request.NoticeRequest;
 import com.rest.notice.dto.*;
 
+import com.rest.notice.exception.NoticeException;
 import com.rest.notice.service.notice.NoticeQueryService;
 import com.rest.notice.service.notice.NoticeService;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +33,9 @@ public class NoticeApiController {
     public ResponseEntity<String> createNotice(
                               @RequestPart(name = "content") String content,
                               @RequestPart(value = "files", required = false) List<MultipartFile> files) throws JsonProcessingException {
-        NoticeRequest request = objectMapper.readValue(content, NoticeRequest.class);
-        noticeService.saveNotice(request,files);
-        return new ResponseEntity<String>(HttpStatus.OK);
+            NoticeRequest request = objectMapper.readValue(content, NoticeRequest.class);
+            noticeService.saveNotice(request,files);
+            return new ResponseEntity<String>(HttpStatus.OK);
     }
 
 
@@ -44,20 +45,22 @@ public class NoticeApiController {
             @PathVariable Long noticeId
             ,@RequestPart(name = "content") String content
             ,@RequestPart(value = "files", required = false) List<MultipartFile> files) throws JsonProcessingException {
-        NoticeRequest request = objectMapper.readValue(content, NoticeRequest.class);
-        noticeService.modifyNotice(noticeId,request,files);
-        return new ResponseEntity<String>(HttpStatus.OK);
+           NoticeRequest request = objectMapper.readValue(content, NoticeRequest.class);
+           noticeService.modifyNotice(noticeId,request,files);
+           return new ResponseEntity<String>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{noticeId}/delete")
     public ResponseEntity<String> deleteNotice(@PathVariable Long noticeId){
-        noticeService.deleteNotice(noticeId);
-        return new ResponseEntity<String>(HttpStatus.OK);
+
+            noticeService.deleteNotice(noticeId);
+            return new ResponseEntity<String>(HttpStatus.OK);
     }
 
 
     @GetMapping("/gets")
     public Page<NoticesQueryDto> notices(@ModelAttribute Pageable pageable) {
+        log.debug("page = {} , offset = {}",pageable.getPageNumber(),pageable.getOffset());
         return noticeQueryService.findAllNotice(pageable);
     }
 
