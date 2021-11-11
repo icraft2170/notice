@@ -1,15 +1,16 @@
 package com.rest.notice.repository.notice;
 
-import com.rest.notice.dto.NoticeQueryDto;
 import com.rest.notice.dto.NoticesQueryDto;
 import com.rest.notice.domain.notice.Notice;
 import com.rest.notice.dto.Page;
 import com.rest.notice.dto.Pageable;
+import com.rest.notice.exception.NoticeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,12 +28,16 @@ public class NoticeRepositoryImpl implements NoticeRepository{
     @Override
     public Notice findByNotice(Long noticeId) {
         // fetchJoin
-        return em.createQuery("select n" +
-                        " from Notice n" +
-                        " join fetch n.uploadFiles" +
-                        " where n.id = :noticeId", Notice.class)
-                .setParameter("noticeId", noticeId)
-                .getSingleResult();
+        try {
+            return em.createQuery("select n" +
+                            " from Notice n" +
+                            " join fetch n.uploadFiles" +
+                            " where n.id = :noticeId", Notice.class)
+                    .setParameter("noticeId", noticeId)
+                    .getSingleResult();
+        }catch (PersistenceException e){
+            throw new NoticeException("공지사항 검색 실패");
+        }
     }
 
     @Override
@@ -57,11 +62,15 @@ public class NoticeRepositoryImpl implements NoticeRepository{
 
     @Override
     public Notice findOne(Long noticeId) {
-        return em.createQuery("select n" +
-                        " from Notice n" +
-                        " where n.id = :noticeId", Notice.class)
-                .setParameter("noticeId",noticeId)
-                .getSingleResult();
+        try {
+            return em.createQuery("select n" +
+                            " from Notice n" +
+                            " where n.id = :noticeId", Notice.class)
+                    .setParameter("noticeId", noticeId)
+                    .getSingleResult();
+        }catch (PersistenceException e){
+            throw new NoticeException("공지사항 검색 실패");
+        }
     }
 
     @Override
