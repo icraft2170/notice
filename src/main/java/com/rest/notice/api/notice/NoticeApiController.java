@@ -3,6 +3,7 @@ package com.rest.notice.api.notice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.notice.api.notice.request.NoticeRequest;
+import com.rest.notice.api.notice.response.NoticeResponse;
 import com.rest.notice.dto.*;
 
 import com.rest.notice.service.notice.NoticeQueryService;
@@ -11,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
@@ -32,9 +35,18 @@ public class NoticeApiController {
     public ResponseEntity<String> createNotice(
                               @RequestPart(name = "content") String content,
                               @RequestPart(value = "files",required = false) List<MultipartFile> files) throws JsonProcessingException {
+
             NoticeRequest request = objectMapper.readValue(content, NoticeRequest.class);
             noticeService.saveNotice(request,files);
-            return new ResponseEntity<String>(HttpStatus.OK);
+
+            return ResponseEntity
+                    .created(URI.create("/notice/post"))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(objectMapper.writeValueAsString(
+                            NoticeResponse.builder()
+                                    .message("create success")
+                                    .build()
+                    ));
     }
 
 
@@ -47,14 +59,28 @@ public class NoticeApiController {
 
            NoticeRequest request = objectMapper.readValue(content, NoticeRequest.class);
            noticeService.modifyNotice(noticeId,request,files);
-           return new ResponseEntity<String>(HttpStatus.OK);
-
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(objectMapper.writeValueAsString(
+                        NoticeResponse.builder()
+                                .message("modify success")
+                                .build()
+                ));
     }
 
     @DeleteMapping("/{noticeId}/delete")
-    public ResponseEntity<String> deleteNotice(@PathVariable Long noticeId){
+    public ResponseEntity<String> deleteNotice(@PathVariable Long noticeId) throws JsonProcessingException {
             noticeService.deleteNotice(noticeId);
-            return new ResponseEntity<String>(HttpStatus.OK);
+
+            return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                    .body(objectMapper.writeValueAsString(
+                            NoticeResponse.builder()
+                                    .message("delete success")
+                                    .build()
+                    ));
     }
 
 

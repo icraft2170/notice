@@ -105,7 +105,7 @@ class NoticeApiControllerTest {
                         .part(
                                 new MockPart("content",content.getBytes(StandardCharsets.UTF_8))
                         ))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         //then
         List<Notice> second = noticeRepository.findAll();
@@ -129,7 +129,7 @@ class NoticeApiControllerTest {
                         .part(
                                 new MockPart("content", ("{ \"title\":\"" + "new-notice" + "\",\"content\":\"notice-new-content\",\"writer\" : \"hyeonho\",\"endDate\":\"2022-03-04T12:00:00\" }").getBytes(StandardCharsets.UTF_8))
                         ))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         String title = "modify-notice";
         String url = "http://localhost:" + port + "/notice/1/post";
@@ -173,7 +173,7 @@ class NoticeApiControllerTest {
                         .part(
                                 new MockPart("content", ("{ \"title\":\"" + "new-notice" + "\",\"content\":\"notice-new-content\",\"writer\" : \"hyeonho\",\"endDate\":\"2022-03-04T12:00:00\" }").getBytes(StandardCharsets.UTF_8))
                         ))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         String url = "http://localhost:" + port + "/notice/1/delete";
 
         //when
@@ -208,7 +208,7 @@ class NoticeApiControllerTest {
                         .part(
                                 new MockPart("content",json.getBytes(StandardCharsets.UTF_8))
                         ))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
 
         //when

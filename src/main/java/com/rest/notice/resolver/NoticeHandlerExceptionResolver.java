@@ -36,6 +36,20 @@ public class NoticeHandlerExceptionResolver implements HandlerExceptionResolver 
                 return new ModelAndView();
             }
 
+            if (ex instanceof Exception) {
+                Map<String, Object> errorResult = new HashMap<>();
+                errorResult.put("error", ex.getClass());
+                errorResult.put("message", ex.getMessage());
+                String result = objectMapper.writeValueAsString(errorResult);
+
+                response.setContentType("application/json");
+                response.setCharacterEncoding("utf-8");
+                response.getWriter().write(result);
+                return new ModelAndView();
+            }
+
+
+
         } catch (IOException e) {
             log.error("resolver ex", e);
         }
