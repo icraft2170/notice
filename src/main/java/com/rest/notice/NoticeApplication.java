@@ -7,5 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NoticeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(NoticeApplication.class, args);
+
 	}
 }

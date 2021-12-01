@@ -44,17 +44,17 @@ public class Notice {
     @Column(name = "writer")
     private String writer;
 
-    @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "notice", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UploadFile> uploadFiles = new ArrayList<>();
 
-    // 생성 메서드
+
     public static Notice createNotice(String title,String content,String writer,LocalDateTime endDate ,List<UploadFile> uploadFiles){
         Notice notice = new Notice(null, title, content, LocalDateTime.now(), endDate, 0, writer, null);
         notice.setUploadFiles(uploadFiles);
         return notice;
     }
 
-    // 연관관계 메서드
+
     private void setUploadFiles(List<UploadFile> uploadFiles) {
         this.uploadFiles = uploadFiles;
         uploadFiles.forEach(uploadFile -> uploadFile.setNotice(this));
